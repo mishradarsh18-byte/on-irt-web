@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Orange Nelumbo · Differential Equations Adaptive Diagnostic</title>
+<meta name="description" content="A 1PL item-response adaptive diagnostic over 239 previous-year JEE Differential Equations questions." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<div class="field" aria-hidden="true"></div>
+
+<header class="bar">
+  <div class="brand">
+    <span class="mark">Orange&nbsp;Nelumbo</span>
+    <span class="sep">/</span>
+    <span class="sub">Differential Equations · Adaptive Diagnostic</span>
+  </div>
+  <nav class="modes" role="tablist" aria-label="Mode">
+    <button class="mode is-on" data-mode="test" role="tab" aria-selected="true">Take the diagnostic</button>
+    <button class="mode" data-mode="sim" role="tab" aria-selected="false">Watch it think</button>
+  </nav>
+</header>
+
+<main class="stage">
+
+  <!-- INTRO ------------------------------------------------------------- -->
+  <section id="intro" class="view is-on">
+    <p class="eyebrow">1PL item-response model · live</p>
+    <h1 class="display">The test finds your level,<br/>one question at a time.</h1>
+    <p class="lede">
+      Every answer re-estimates your ability on a single logit scale, then the
+      engine serves the question that tells it the most about where you actually
+      sit. No fixed paper. The diagnostic ends when it is confident, or after
+      twenty items.
+    </p>
+    <div class="facts" id="introFacts">
+      <div class="fact"><span class="num" id="fItems">—</span><span class="lab">PYQ items</span></div>
+      <div class="fact"><span class="num" id="fClusters">—</span><span class="lab">concept clusters</span></div>
+      <div class="fact"><span class="num">1PL</span><span class="lab">Rasch-class model</span></div>
+    </div>
+    <button class="cta" id="startBtn">Begin diagnostic</button>
+    <p class="micro">
+      Questions are previous-year references. Solve each on paper, reveal the
+      answer, then mark yourself honestly — the model adapts to what you report.
+    </p>
+  </section>
+
+  <!-- TEST -------------------------------------------------------------- -->
+  <section id="test" class="view">
+    <div class="grid">
+      <!-- question -->
+      <article class="card" id="qcard">
+        <div class="qhead">
+          <span class="chip cluster" id="qCluster">—</span>
+          <span class="chip ghost" id="qYear">—</span>
+          <span class="chip diff" id="qDiff">b —</span>
+        </div>
+        <p class="qtype" id="qType">—</p>
+        <h2 class="qtext" id="qText">Loading…</h2>
+
+        <div class="answer" id="answerWrap" hidden>
+          <span class="answer-lab">Stored answer</span>
+          <p class="answer-val" id="qAnswer">—</p>
+        </div>
+
+        <div class="actions" id="preReveal">
+          <button class="btn solid" id="revealBtn">Reveal answer</button>
+        </div>
+        <div class="actions" id="postReveal" hidden>
+          <button class="btn good" id="rightBtn">I solved it</button>
+          <button class="btn bad" id="wrongBtn">I missed it</button>
+        </div>
+      </article>
+
+      <!-- instrument -->
+      <aside class="panel">
+        <div class="readout">
+          <div class="theta">
+            <span class="rlab">Ability θ</span>
+            <span class="rval" id="thetaVal">0.00</span>
+          </div>
+          <div class="se">
+            <span class="rlab">Std error</span>
+            <span class="rval mono" id="seVal">—</span>
+          </div>
+        </div>
+
+        <svg id="axis" viewBox="0 0 600 190" class="axis" aria-label="Ability scale"></svg>
+
+        <div class="progress">
+          <span class="rlab">Item <b id="nNow">0</b> / <span id="nMax">20</span></span>
+          <div class="track"><div class="bar" id="progBar"></div></div>
+        </div>
+
+        <div class="clusters" id="clusterChips" aria-label="Concept coverage"></div>
+        <p class="band" id="bandText">Answer to begin.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SIMULATION -------------------------------------------------------- -->
+  <section id="sim" class="view">
+    <div class="grid">
+      <article class="card">
+        <p class="qtype">Simulated student</p>
+        <h2 class="qtext small">Set a true ability, then watch the engine recover it from nothing.</h2>
+        <label class="slider-lab">True θ <span class="mono" id="simThetaLab">+0.40</span></label>
+        <input type="range" id="simTheta" min="-3" max="3" step="0.1" value="0.4" />
+        <div class="actions">
+          <button class="btn solid" id="simRun">Run simulated test</button>
+        </div>
+        <div class="log" id="simLog"></div>
+      </article>
+
+      <aside class="panel">
+        <div class="readout">
+          <div class="theta">
+            <span class="rlab">Estimated θ</span>
+            <span class="rval" id="simThetaVal">0.00</span>
+          </div>
+          <div class="se">
+            <span class="rlab">vs true</span>
+            <span class="rval mono" id="simErr">—</span>
+          </div>
+        </div>
+        <svg id="simAxis" viewBox="0 0 600 190" class="axis" aria-label="Ability scale"></svg>
+        <div class="progress">
+          <span class="rlab">Item <b id="simN">0</b> / <span id="simMax">20</span></span>
+          <div class="track"><div class="bar" id="simBar"></div></div>
+        </div>
+        <p class="band" id="simBand">Press run.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- RESULT ------------------------------------------------------------ -->
+  <section id="result" class="view">
+    <p class="eyebrow">Diagnostic complete</p>
+    <h1 class="display" id="rTheta">θ —</h1>
+    <p class="lede" id="rBand">—</p>
+    <div class="facts">
+      <div class="fact"><span class="num mono" id="rScore">—</span><span class="lab">solved</span></div>
+      <div class="fact"><span class="num mono" id="rN">—</span><span class="lab">items</span></div>
+      <div class="fact"><span class="num mono" id="rSe">—</span><span class="lab">std error</span></div>
+    </div>
+    <div class="repair" id="repair"></div>
+    <button class="cta" id="againBtn">Run it again</button>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>1PL IRT engine · θ via MLE with EAP fallback · max-information selection, randomesque exposure control, content balancing</span>
+</footer>
+
+<script src="./app.js"></script>
+</body>
+</html>

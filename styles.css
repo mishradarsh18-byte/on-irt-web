@@ -1,0 +1,195 @@
+/* =========================================================================
+   Orange Nelumbo — Differential Equations Adaptive Diagnostic
+   Palette: deep ink + warm nelumbo amber (primary) + cool teal (data)
+   Type:    Fraunces (display) · Inter (body) · Space Mono (data)
+   ========================================================================= */
+:root{
+  --ink:        #0c0e13;
+  --ink-2:      #11141c;
+  --panel:      #161a24;
+  --panel-2:    #1b2030;
+  --line:       rgba(255,255,255,0.09);
+  --line-2:     rgba(255,255,255,0.16);
+  --text:       #ece9e2;
+  --muted:      #99a0ad;
+  --faint:      #6b7280;
+  --amber:      #f3a64c;   /* nelumbo primary */
+  --amber-deep: #c8772e;
+  --teal:       #3ad6c4;   /* data / cool */
+  --teal-deep:  #1c9c8d;
+  --rose:       #e76a82;   /* miss */
+  --good:       #57d6a6;   /* solve */
+  --radius:     16px;
+  --shadow:     0 24px 60px -28px rgba(0,0,0,0.8);
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{
+  background:
+    radial-gradient(1200px 600px at 78% -8%, rgba(243,166,76,0.10), transparent 60%),
+    radial-gradient(900px 500px at 8% 108%, rgba(58,214,196,0.07), transparent 60%),
+    var(--ink);
+  color:var(--text);
+  font-family:"Inter", system-ui, sans-serif;
+  font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100%;
+  display:flex; flex-direction:column;
+}
+
+/* faint differential-equations slope-field texture in the backdrop */
+.field{
+  position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.5;
+  background-image:
+    repeating-linear-gradient(28deg, rgba(255,255,255,0.022) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(-14deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 30px);
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 80%);
+          mask-image:radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 80%);
+}
+
+/* ---- top bar ---- */
+.bar{
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+  padding:20px clamp(18px,5vw,56px);
+  border-bottom:1px solid var(--line);
+}
+.brand{ display:flex; align-items:baseline; gap:12px; min-width:0; }
+.mark{ font-family:"Fraunces",serif; font-weight:600; font-size:19px; letter-spacing:0.2px; }
+.brand .sep{ color:var(--faint); }
+.brand .sub{ color:var(--muted); font-size:13px; letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.modes{ display:flex; gap:6px; background:var(--ink-2); border:1px solid var(--line); border-radius:999px; padding:4px; }
+.mode{
+  appearance:none; border:0; background:transparent; color:var(--muted);
+  font-family:inherit; font-size:13px; font-weight:500; letter-spacing:0.2px;
+  padding:7px 14px; border-radius:999px; cursor:pointer; transition:.18s;
+}
+.mode:hover{ color:var(--text); }
+.mode.is-on{ background:linear-gradient(180deg,var(--amber),var(--amber-deep)); color:#1a1206; font-weight:600; }
+
+/* ---- stage / views ---- */
+.stage{ position:relative; z-index:1; flex:1; padding:clamp(28px,6vw,72px) clamp(18px,5vw,56px); }
+.view{ display:none; max-width:1080px; margin:0 auto; animation:rise .5s ease both; }
+.view.is-on{ display:block; }
+@keyframes rise{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+
+.eyebrow{ font-family:"Space Mono",monospace; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:var(--amber); margin:0 0 18px; }
+.display{
+  font-family:"Fraunces",serif; font-weight:500; line-height:1.04;
+  font-size:clamp(34px,6vw,62px); letter-spacing:-0.015em; margin:0 0 22px;
+}
+.lede{ font-size:clamp(16px,2.1vw,19px); color:var(--muted); max-width:60ch; margin:0 0 30px; }
+
+/* facts row */
+.facts{ display:flex; gap:clamp(20px,5vw,56px); margin:0 0 34px; flex-wrap:wrap; }
+.fact{ display:flex; flex-direction:column; gap:4px; }
+.fact .num{ font-family:"Fraunces",serif; font-size:clamp(28px,4vw,40px); font-weight:600; color:var(--text); line-height:1; }
+.fact .num.mono{ font-family:"Space Mono",monospace; font-weight:700; }
+.fact .lab{ font-size:12.5px; color:var(--faint); letter-spacing:0.04em; }
+
+.cta{
+  appearance:none; cursor:pointer; border:0;
+  font-family:inherit; font-weight:600; font-size:16px; letter-spacing:0.2px;
+  color:#1a1206; padding:15px 30px; border-radius:999px;
+  background:linear-gradient(180deg,var(--amber),var(--amber-deep));
+  box-shadow:0 14px 34px -14px rgba(243,166,76,0.7);
+  transition:transform .15s, box-shadow .15s;
+}
+.cta:hover{ transform:translateY(-2px); box-shadow:0 20px 44px -16px rgba(243,166,76,0.85); }
+.cta:active{ transform:translateY(0); }
+.micro{ font-size:12.5px; color:var(--faint); max-width:54ch; margin:20px 0 0; }
+
+/* ---- test / sim grid ---- */
+.grid{ display:grid; grid-template-columns:1.25fr 1fr; gap:clamp(16px,3vw,28px); align-items:start; }
+@media (max-width:860px){ .grid{ grid-template-columns:1fr; } }
+
+.card, .panel{
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.card{ padding:clamp(22px,3vw,32px); min-height:340px; display:flex; flex-direction:column; }
+.panel{ padding:clamp(20px,3vw,26px); }
+
+.qhead{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+.chip{
+  font-family:"Space Mono",monospace; font-size:11.5px; letter-spacing:0.04em;
+  padding:5px 10px; border-radius:8px; border:1px solid var(--line-2);
+  color:var(--muted); background:rgba(255,255,255,0.02); white-space:nowrap;
+}
+.chip.cluster{ color:var(--teal); border-color:rgba(58,214,196,0.35); background:rgba(58,214,196,0.07); }
+.chip.diff{ color:var(--amber); border-color:rgba(243,166,76,0.35); background:rgba(243,166,76,0.07); }
+.qtype{ font-size:12px; color:var(--faint); text-transform:uppercase; letter-spacing:0.16em; margin:0 0 10px; }
+.qtext{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(21px,3vw,28px); line-height:1.2; margin:0; letter-spacing:-0.01em; }
+.qtext.small{ font-size:clamp(18px,2.4vw,22px); }
+
+.answer{ margin-top:auto; padding:16px 18px; border-radius:12px; border:1px dashed var(--line-2);
+  background:rgba(58,214,196,0.05); }
+.answer-lab{ font-family:"Space Mono",monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--teal); }
+.answer-val{ margin:6px 0 0; font-size:16px; color:var(--text); }
+
+.actions{ display:flex; gap:12px; margin-top:24px; }
+.btn{
+  appearance:none; cursor:pointer; flex:1;
+  font-family:inherit; font-weight:600; font-size:15px;
+  padding:14px 18px; border-radius:12px; border:1px solid var(--line-2);
+  background:rgba(255,255,255,0.03); color:var(--text); transition:.15s;
+}
+.btn:hover{ border-color:var(--line-2); background:rgba(255,255,255,0.06); transform:translateY(-1px); }
+.btn.solid{ background:linear-gradient(180deg,var(--amber),var(--amber-deep)); color:#1a1206; border:0; }
+.btn.good{ border-color:rgba(87,214,166,0.4); color:var(--good); background:rgba(87,214,166,0.08); }
+.btn.good:hover{ background:rgba(87,214,166,0.16); }
+.btn.bad{ border-color:rgba(231,106,130,0.4); color:var(--rose); background:rgba(231,106,130,0.08); }
+.btn.bad:hover{ background:rgba(231,106,130,0.16); }
+
+/* ---- instrument panel ---- */
+.readout{ display:flex; justify-content:space-between; gap:16px; margin-bottom:16px; }
+.rlab{ display:block; font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:4px; }
+.rval{ font-family:"Fraunces",serif; font-size:34px; font-weight:600; line-height:1; }
+.theta .rval{ color:var(--amber); }
+.rval.mono{ font-family:"Space Mono",monospace; font-size:26px; font-weight:700; color:var(--text); }
+.se{ text-align:right; }
+
+.axis{ width:100%; height:auto; display:block; margin:6px 0 14px; }
+
+.progress{ margin:6px 0 16px; }
+.progress .rlab{ display:flex; justify-content:space-between; }
+.track{ height:6px; border-radius:99px; background:rgba(255,255,255,0.07); overflow:hidden; margin-top:8px; }
+.bar{ height:100%; width:0%; border-radius:99px; background:linear-gradient(90deg,var(--teal-deep),var(--teal)); transition:width .4s ease; }
+
+.clusters{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+.cchip{
+  font-family:"Space Mono",monospace; font-size:10.5px; letter-spacing:0.02em;
+  padding:4px 8px; border-radius:7px; border:1px solid var(--line);
+  color:var(--faint); background:transparent; transition:.25s;
+}
+.cchip.hit{ color:var(--teal); border-color:rgba(58,214,196,0.4); background:rgba(58,214,196,0.08); }
+.cchip.miss{ color:var(--rose); border-color:rgba(231,106,130,0.4); background:rgba(231,106,130,0.08); }
+
+.band{ font-size:14px; color:var(--muted); margin:6px 0 0; line-height:1.45; }
+
+/* slider (sim) */
+.slider-lab{ display:block; font-size:13px; color:var(--muted); margin:18px 0 8px; }
+.slider-lab .mono{ font-family:"Space Mono",monospace; color:var(--amber); }
+input[type=range]{ width:100%; accent-color:var(--amber); }
+.log{ margin-top:18px; display:flex; flex-direction:column; gap:5px; max-height:230px; overflow:auto; }
+.logrow{ font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:10px;
+  padding:6px 8px; border-radius:7px; border:1px solid var(--line); }
+.logrow .ok{ color:var(--good); }
+.logrow .no{ color:var(--rose); }
+
+/* result repair list */
+.repair{ display:flex; flex-direction:column; gap:8px; margin:6px 0 30px; }
+.repair .rrow{ display:flex; align-items:center; gap:12px; padding:12px 16px; border:1px solid var(--line); border-radius:12px;
+  background:rgba(231,106,130,0.05); }
+.repair .rrow b{ color:var(--rose); font-weight:600; }
+.repair .rrow span{ color:var(--muted); font-size:14px; }
+
+/* footer */
+.foot{ position:relative; z-index:1; padding:22px clamp(18px,5vw,56px); border-top:1px solid var(--line);
+  color:var(--faint); font-size:12px; font-family:"Space Mono",monospace; letter-spacing:0.02em; }
+
+/* a11y */
+:focus-visible{ outline:2px solid var(--amber); outline-offset:3px; border-radius:6px; }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
